@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+- '7'
+after_script:
+- npm install coveralls
+- npm run test-coverage
+- cat ./coverage/lcov.info | coveralls
