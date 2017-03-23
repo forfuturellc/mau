@@ -74,6 +74,13 @@ formset.addForm("example", /\/example/, [
         },
     },
     {
+        name: "color",
+        query: {
+            text: "Pick a color",
+            choices: ["red", "green"],
+        },
+    },
+    {
         name: "random",
         text: "type something random (retries till you answer with 'random')",
         post(done) {
@@ -97,23 +104,28 @@ formset.addForm("example", /\/example/, [
         "answers:",
         "  name=" + answers.name,
         "  skipped=" + answers.skipped,
+        "  color=" + answers.color,
         "  radom=" + answers.random,
     ].join("\n"));
 });
 
 
+formset.on("query", function(query, msg) {
+    console.log("[*] new query from formset");
+    const opts = {};
+    if (query.choices) {
+        opts["reply_markup"] = {
+            keyboard: [query.choices],
+            "resize_keyboard": true,
+            "one_time_keyboard": true,
+        };
+    }
+    return bot.sendMessage(msg.chat.id, query.text, opts);
+});
+
+
 bot.on("text", function(msg) {
     console.log("[*] received new text message: %s", msg.text);
-
-    // We can trigger the formset to process a particular form!
-    // Here, for example, we trigger the form named 'example'
-    // if our message text equals '/trigger'!
-    if (msg.text.trim() === "/trigger") {
-        // WARNING: This should be used by less-novice programmers
-        // as it requires discipline! If a form is already being
-        // processed for the user, this will fail with an error!
-        return formset.processForm("example", msg.chat.id, msg, onProcess);
-    }
 
     // Have the formset process the message, in the chat identified
     // by the unique ID `msg.chat.id`. Use the message's text `msg.text`
@@ -122,10 +134,18 @@ bot.on("text", function(msg) {
     // the form's callback (as seen above).
     return formset.process(msg.chat.id, msg.text, msg, onProcess);
 
-    function onProcess(error, text) {
-        if (error) return console.error(error);
-        // During processing the engine will pass a query's message in
-        // 'text'. You are responsible of sending messages to the user!
-        bot.sendMessage(msg.chat.id, text);
+    function onProcess(error) {
+        if (error) {
+            if (error.code === "ENOENT") {
+                console.log("[*] triggering the example form");
+                return formset.processForm("example", msg.chat.id, msg, onSelectFormProcess);
+            }
+            return console.error(error);
+        }
+    }
+    function onSelectFormProcess(error) {
+        if (error) {
+            return console.error(error);
+        }
     }
 });
