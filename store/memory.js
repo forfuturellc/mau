@@ -22,7 +22,8 @@ class MemorySessionStore extends SessionStore {
         return done(null, memory.get(sid));
     }
     put(sid, session, options, done) {
-        return done(null, memory.put(sid, session, options.ttl || undefined));
+        const ttl = options.ttl === +Infinity ? undefined : options.ttl;
+        return done(null, memory.put(sid, session, ttl));
     }
     del(sid, done) {
         return done(null, memory.del(sid));
