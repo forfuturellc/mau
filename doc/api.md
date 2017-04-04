@@ -17,7 +17,7 @@ FormSet Class
 * [FormSet](#FormSet)
     * [new FormSet([options])](#new_FormSet_new)
     * [.addForm(name, queries, [options])](#FormSet+addForm)
-    * [.processForm(formName, chatID, ref, done(error))](#FormSet+processForm)
+    * [.processForm(formName, chatID, ref, [options], done(error))](#FormSet+processForm)
     * [.process(chatID, text, ref, done(error))](#FormSet+process)
 
 <a name="new_FormSet_new"></a>
@@ -50,7 +50,7 @@ Add a new form to this set.
 
 <a name="FormSet+processForm"></a>
 
-### formSet.processForm(formName, chatID, ref, done(error))
+### formSet.processForm(formName, chatID, ref, [options], done(error))
 Process the message using a certain form.
 If a form is being processed already, an error will be passed to
 callback.
@@ -62,6 +62,8 @@ callback.
 | formName | <code>String</code> | Name of form |
 | chatID | <code>String</code> \| <code>Number</code> | Unique identifier for the originating chat |
 | ref | <code>Object</code> \| <code>function</code> | Reference |
+| [options] | <code>Object</code> |  |
+| [options.answers] | <code>Object</code> | Initial answers hash |
 | done(error) | <code>function</code> |  |
 
 <a name="FormSet+process"></a>
