@@ -88,7 +88,7 @@ QueryController Class
 **Kind**: global class  
 
 * [QueryController](#QueryController)
-    * [new QueryController(form, answers, ref)](#new_QueryController_new)
+    * [new QueryController(form, session, ref)](#new_QueryController_new)
     * [.getAnswer([name])](#QueryController+getAnswer) ⇒ <code>\*</code>
     * [.getAnswers()](#QueryController+getAnswers) ⇒ <code>Object</code>
     * [.setAnswer([name], val)](#QueryController+setAnswer)
@@ -101,12 +101,12 @@ QueryController Class
 
 <a name="new_QueryController_new"></a>
 
-### new QueryController(form, answers, ref)
+### new QueryController(form, session, ref)
 
 | Param | Type | Description |
 | --- | --- | --- |
 | form | <code>Object</code> | Form |
-| answers | <code>Object</code> | Reference to an answers object |
+| session | <code>Object</code> | Session |
 | ref | <code>Object</code> | Reference |
 
 <a name="QueryController+getAnswer"></a>
