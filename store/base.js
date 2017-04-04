@@ -30,7 +30,8 @@ class SessionStore extends EventEmitter {
      * @param  {String} sid Session ID
      * @param  {Object} session Session object
      * @param  {Object} options
-     * @param  {Number} options.ttl=null Session TTL
+     * @param  {Number} options.ttl Session TTL. Equals `+Infinity` to
+     *  have the session stored indefinitely.
      * @param  {Function} done(error)
      */
     put(sid, session, options, done) { // eslint-disable-line no-unused-vars
