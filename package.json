@@ -21,10 +21,10 @@
     "test-coverage": "istanbul cover _mocha --report lcovonly -- -R spec test/test.*.js"
   },
   "dependencies": {
-    "async": "^2.1.5",
-    "debug": "^2.6.1",
+    "async": "^2.3.0",
+    "debug": "^2.6.3",
     "memory-cache": "^0.1.6",
-    "redis": "^2.6.5"
+    "redis": "^2.7.1"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
