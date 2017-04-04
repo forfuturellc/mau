@@ -25,6 +25,9 @@ const Tgfancy = require("tgfancy");
 const proxy = httpProxy.createProxy();
 const port = parseInt(process.argv[2], 10) || 9432;
 const botPorts = (process.argv[3] || "").split(",");
+if (!botPorts[0]) {
+    throw new Error("no bots to proxy to");
+}
 const server = http.Server(requestListener);
 const token = process.env.TELEGRAM_TOKEN;
 if (!token) {

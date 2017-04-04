@@ -44,15 +44,14 @@ const bot = new Tgfancy(token, opts);
 // We are adding a new form named 'example', that will be triggered
 // when the provided regexp evaluates to true. (This triggering will
 // become clearer later. Live by faith, my friend!)
-formset.addForm("example", /\/example/, [
+formset.addForm("example", [
     // This is a single query named 'name'.
     {
         name: "name",
         text: "what is your name? (will be capitalized)",
         // 'post' hook: executed AFTER the user has answered.
-        post(done) {
-            // We are retrieving the answer the user has passed us.
-            const answer = this.getAnswer();
+        post(answer, done) {
+            // 'answer' is the answer the user provided.
             // Let's update our answer with a uppercased version.
             this.setAnswer(answer.toUpperCase());
             // ALWAYS invoke the callback (directly or indirectly;
@@ -67,7 +66,7 @@ formset.addForm("example", /\/example/, [
         // 'pre' hook: executed BEFORE the user answers the query.
         pre(done) {
             this.setAnswer(true);
-            // You can also have the engine skip the query.
+            // You can have the engine skip the query.
             // Notice that we are passing in the callback (`done`) to
             // `this.skip()`! Therefore you do NOT need to invoke `done()`.
             return this.skip(done);
@@ -75,25 +74,40 @@ formset.addForm("example", /\/example/, [
     },
     {
         name: "color",
-        query: {
+        question: {
             text: "Pick a color",
             choices: ["red", "green"],
+            strict: true,
         },
+        post(answer, done) {
+            // The engine allows you to skip to another query
+            return this.skipTo("random", done);
+        },
+    },
+    {
+        name: "untouched",
+        text: "This will not (and should NOT) be used!",
     },
     {
         name: "random",
         text: "type something random (retries till you answer with 'random')",
-        post(done) {
-            const answer = this.getAnswer();
+        post(answer, done) {
             if (answer !== "random") {
                 // We can also make the engine retry the query.
                 // Also, here we pass in the callback (`done`).
-                return this.retry(done);
+                return this.retry("type in 'random'", done);
             }
             return done();
         },
     },
-], function(answers, msg) {
+], {
+    // Specify an optional function that will be invoked when the
+    // form has been completed by a user.
+    cb: answersCb,
+});
+
+
+function answersCb(answers, msg) {
     // 'answers': Object/hash with the answers
     // 'msg': Message 'object'
     // Notice we are NOT getting an error object! What!!!
@@ -106,21 +120,22 @@ formset.addForm("example", /\/example/, [
         "  skipped=" + answers.skipped,
         "  color=" + answers.color,
         "  radom=" + answers.random,
-    ].join("\n"));
-});
+    ].join("\n")).catch(error => console.error(error));
+}
 
 
-formset.on("query", function(query, msg) {
+formset.on("query", function(question, msg) {
     console.log("[*] new query from formset");
     const opts = {};
-    if (query.choices) {
+    if (question.choices) {
         opts["reply_markup"] = {
-            keyboard: [query.choices],
+            keyboard: [question.choices.map(c => c.id)],
             "resize_keyboard": true,
             "one_time_keyboard": true,
         };
     }
-    return bot.sendMessage(msg.chat.id, query.text, opts);
+    return bot.sendMessage(msg.chat.id, question.text, opts)
+        .catch(error => console.error(error));
 });
 
 
