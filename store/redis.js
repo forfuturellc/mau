@@ -45,7 +45,7 @@ class RedisSessionStore extends SessionStore {
     put(sid, session, options, done) {
         const data = JSON.stringify(session);
         const args = [sid, data];
-        if (options.ttl) {
+        if (options.ttl !== +Infinity) {
             args.push("PX", options.ttl);
         }
         return this.client.set(args, done);
