@@ -17,22 +17,24 @@ const Tgfancy = require("tgfancy");
 
 
 // module variables
+const token = process.env.TELEGRAM_TOKEN;
+if (!token) {
+    throw new Error("Missing Telegram token");
+}
 const formset = new mau.FormSet({
     // You can use different session stores, as long as they conform
     // to the SessionStore interface.
     // By default, memory session store is used i.e. stores session
     // objects in process memory, thus NOT scalable to multiple instances.
-    store: new RedisStore(),
+    store: process.env.NO_REDIS ? undefined : new RedisStore({
+        port: process.env.REDIS_PORT,
+    }),
     // Time-To-Live: this indicates how long the session should be stored.
     // If the session expires, the form will be lost.
     // By default, the session lives infinitely. You'll set this
     // to your liking.
-    ttl: 1000 * 60,
+    ttl: 1000 * 60 * 5, // in milliseconds.
 });
-const token = process.env.TELEGRAM_TOKEN;
-if (!token) {
-    throw new Error("Missing Telegram token");
-}
 const port = parseInt(process.argv[2], 10);
 const opts =  port ?
     { webHook: { host: "127.0.0.1", port } } :
@@ -40,15 +42,14 @@ const opts =  port ?
 const bot = new Tgfancy(token, opts);
 
 
-// A formset can hold multiple forms.
-// We are adding a new form named 'example', that will be triggered
-// when the provided regexp evaluates to true. (This triggering will
-// become clearer later. Live by faith, my friend!)
+// A formset holds multiple forms.
+// We are adding a new form named 'example'.
 formset.addForm("example", [
     // This is a single query named 'name'.
+    // We are asking the user for their name.
     {
         name: "name",
-        text: "what is your name? (will be capitalized)",
+        text: "What is your name?",
         // 'post' hook: executed AFTER the user has answered.
         post(answer, done) {
             // 'answer' is the answer the user provided.
@@ -65,10 +66,10 @@ formset.addForm("example", [
         text: "this should be skipped",
         // 'pre' hook: executed BEFORE the user answers the query.
         pre(done) {
+            // Let's just place a dummy answer.
             this.setAnswer(true);
-            // You can have the engine skip the query.
-            // Notice that we are passing in the callback (`done`) to
-            // `this.skip()`! Therefore you do NOT need to invoke `done()`.
+            // Skip this query i.e. do NOT send the question.
+            // Move to next query.
             return this.skip(done);
         },
     },
@@ -76,21 +77,23 @@ formset.addForm("example", [
         name: "color",
         question: {
             text: "Pick a color",
-            choices: ["red", "green"],
-            strict: true,
+            choices: ["black", "white", "gray"],
         },
         post(answer, done) {
-            // The engine allows you to skip to another query
-            return this.skipTo("random", done);
+            // The engine allows you to skip to another query.
+            return this.goto("random", done);
         },
     },
     {
         name: "untouched",
         text: "This will not (and should NOT) be used!",
+        pre() {
+            throw new Error("We should NOT be here!!!");
+        },
     },
     {
         name: "random",
-        text: "type something random (retries till you answer with 'random')",
+        text: "Type something random (retries till you answer with 'random')",
         post(answer, done) {
             if (answer !== "random") {
                 // We can also make the engine retry the query.
@@ -101,20 +104,20 @@ formset.addForm("example", [
         },
     },
 ], {
-    // Specify an optional function that will be invoked when the
+    // Specify an *optional* function that will be invoked when the
     // form has been completed by a user.
     cb: answersCb,
 });
 
 
-function answersCb(answers, msg) {
-    // 'answers': Object/hash with the answers
-    // 'msg': Message 'object'
+function answersCb(answers, ref) {
+    // 1. 'answers' - Object/hash with the answers.
+    // 2. 'ref' - Our object reference; we are providing this later.
     // Notice we are NOT getting an error object! What!!!
     // Well, errors that occur while processing the queries will be
     // passed somewhere else better suited for it.
     // (Keep Reading!)
-    return bot.sendMessage(msg.chat.id, [
+    return bot.sendMessage(ref.chat.id, [
         "answers:",
         "  name=" + answers.name,
         "  skipped=" + answers.skipped,
@@ -124,34 +127,55 @@ function answersCb(answers, msg) {
 }
 
 
+// The formset emits the "query" event when a question should
+// be asked to the user. It is up to YOU to send the query to
+// the user (on whichever platform your bot is running on).
 formset.on("query", function(question, msg) {
     console.log("[*] new query from formset");
     const opts = {};
+    // A question may have choices. Each choice has the interface:
+    // 1. `choice.id`:  ID of choice
+    // 2. `choice.text`: Text of choice
+    // In most cases, you should have your messaging platform present
+    // buttons with text set as `choice.text`, and once clicked returns
+    // the ID of the clicked button i.e. `choice.id`.
     if (question.choices) {
         opts["reply_markup"] = {
-            keyboard: [question.choices.map(c => c.id)],
+            keyboard: [question.choices.map((c) => c.id)],
             "resize_keyboard": true,
             "one_time_keyboard": true,
         };
     }
+    // `question.text` is the actual text that should be sent
+    // to user.
     return bot.sendMessage(msg.chat.id, question.text, opts)
         .catch(error => console.error(error));
 });
 
 
+// Receiving messages from users.
 bot.on("text", function(msg) {
     console.log("[*] received new text message: %s", msg.text);
 
+    // A Reference is used to allow you to provide arbitrary data
+    // and objects to enable your operations in hooks in the forms,
+    // form completion callback, etc. The reference you provide
+    // to any of the select functions is passed AS IS to relevant
+    // callbacks.
+    const ref = msg; // Just the original message object.
+
     // Have the formset process the message, in the chat identified
-    // by the unique ID `msg.chat.id`. Use the message's text `msg.text`
-    // to test against the regular expressions accompanying each
-    // form. The 'msg' is mostly for convenience; it is passed to
-    // the form's callback (as seen above).
-    return formset.process(msg.chat.id, msg.text, msg, onProcess);
+    // by the unique ID `msg.chat.id`.
+    // Use the message's text `msg.text` as the answer.
+    // Our reference i.e. `ref`.
+    return formset.process(msg.chat.id, msg.text, ref, onProcess);
 
     function onProcess(error) {
         if (error) {
-            if (error.code === "ENOENT") {
+            // A form was not found. You can trigger a certain form be
+            // used, as we doing below. You may choose to ask the user to
+            // choose for themselves, etc.
+            if (error instanceof mau.errors.FormNotFoundError) {
                 console.log("[*] triggering the example form");
                 return formset.processForm("example", msg.chat.id, msg, onSelectFormProcess);
             }
@@ -164,3 +188,6 @@ bot.on("text", function(msg) {
         }
     }
 });
+
+
+console.log("[*] send a message to your bot");

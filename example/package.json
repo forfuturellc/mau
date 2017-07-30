@@ -1,0 +1,9 @@
+{
+    "private": "true",
+    "name": "mau-examples",
+    "dependencies": {
+        "http-proxy": "^1.16.2",
+        "ngrok": "^2.2.15",
+        "tgfancy": "^0.10.0"
+    }
+}

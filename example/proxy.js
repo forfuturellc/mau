@@ -22,24 +22,25 @@ const Tgfancy = require("tgfancy");
 
 
 // module variables
-const proxy = httpProxy.createProxy();
-const port = parseInt(process.argv[2], 10) || 9432;
-const botPorts = (process.argv[3] || "").split(",");
-if (!botPorts[0]) {
-    throw new Error("no bots to proxy to");
-}
-const server = http.Server(requestListener);
 const token = process.env.TELEGRAM_TOKEN;
 if (!token) {
-    throw new Error("missing telegram token");
+    throw new Error("Missing telegram token");
 }
+const proxy = httpProxy.createProxy();
+const port = parseInt(process.env.PROXY_PORT, 10) || 9100;
+const botPorts = (process.argv[2] || "").split(",");
+if (!botPorts[0]) {
+    throw new Error("No bots to proxy to");
+}
+const server = http.Server(requestListener);
 const bot = new Tgfancy(token);
 let index = 0;
 
 
+console.log("[*] opening a ngrok tunnel");
 ngrok.connect(port, function(error, url) {
     if (error) throw error;
-    console.log("[*] setting webhook to %s (-> http://127.0.0.1:%d)", url, port);
+    console.log("[*] setting Telegram bot webhook to %s", url);
     bot.setWebHook(`${url}/bot${token}`).catch(function(error) {
         if (error) throw error;
     });
@@ -48,9 +49,7 @@ ngrok.connect(port, function(error, url) {
 
 function requestListener(req, res) {
     const botPort = botPorts[index];
-    if (!botPort) return;
-    index++;
-    if (index === botPorts.length) index = 0;
+    if (++index === botPorts.length) index = 0;
     console.log("[*] proxying to port %s", botPort);
     return proxy.web(req, res, {
         target: `http://0.0.0.0:${botPort}`,
