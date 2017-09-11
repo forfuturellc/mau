@@ -10,6 +10,10 @@
 const assert = require("assert");
 
 
+// installed modules
+const redis = require("redis");
+
+
 // own modules
 const SessionStore = require("../../../store/base");
 const RedisStore = require("../../../store/redis");
@@ -34,6 +38,24 @@ describe("RedisStore", function() {
     });
     it("sub-classes SessionStore", function() {
         assert.ok(store instanceof SessionStore);
+    });
+    it("[#put()] allows custom client", function(done) {
+        const customPrefix = `${prefix}custom:`;
+        const customClient = redis.createClient({
+            prefix: customPrefix,
+        });
+        const customStore = new RedisStore({ client: customClient });
+        customClient.del(sid, function(error) {
+            assert.ifError(error);
+            customStore.put(sid, session, options, function(error) {
+                assert.ifError(error);
+                customClient.get(sid, function(error, data) {
+                    assert.ifError(error);
+                    assert.ok(data);
+                    return done();
+                });
+            });
+        });
     });
 
     describe("#put()", function() {

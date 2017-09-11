@@ -17,13 +17,18 @@ const SessionStore = require("./base");
 class RedisSessionStore extends SessionStore {
     /**
      * @constructor
-     * @param  {Object} [options] Options passed to 'redis.createClient()'
+     * @param  {Object} [options] Options passed to 'redis.createClient()' (if `options.client` is *not* provided)
+     * @param  {RedisClient} [options.client] An existing client
      * @see https://github.com/NodeRedis/node_redis#rediscreateclient
      */
-    constructor(options) {
+    constructor(options={}) {
         super();
-        this.client = redis.createClient(options);
-        this.client.on("error", (error) => this.emit("error", error));
+        if (options.client) {
+            this.client = options.client;
+        } else {
+            this.client = redis.createClient(options);
+            this.client.on("error", (error) => this.emit("error", error));
+        }
     }
     get(sid, done) {
         return this.client.get(sid, (error, data) => {
