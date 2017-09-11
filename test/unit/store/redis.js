@@ -16,15 +16,17 @@ const RedisStore = require("../../../store/redis");
 
 
 describe("RedisStore", function() {
+    const prefix = "test:mau:";
     const sid = "SID";
     const session = { key: "value" };
     const options = { ttl: +Infinity };
     let store;
 
-    beforeEach(function() {
+    beforeEach(function(done) {
         store = new RedisStore({
-            prefix: "test:mau:",
+            prefix,
         });
+        store.del(sid, done);
     });
 
     it("is exported as a Function/constructor", function() {
@@ -48,13 +50,16 @@ describe("RedisStore", function() {
     });
 
     describe("#del()", function() {
-        it("deletes session", function(done) {
-            store.del(sid, function(error) {
+        it("[#put()] deletes session", function(done) {
+            store.put(sid, session, options, function(error) {
                 assert.ifError(error);
-                store.get(sid, function(error, sess) {
+                store.del(sid, function(error) {
                     assert.ifError(error);
-                    assert.ok(!sess, "Session not destroyed.");
-                    return done();
+                    store.get(sid, function(error, sess) {
+                        assert.ifError(error);
+                        assert.ok(!sess, "Session not destroyed.");
+                        return done();
+                    });
                 });
             });
         });
