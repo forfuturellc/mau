@@ -136,6 +136,7 @@ Error code is `"ESESS"`.
 
 * [FormSet](#FormSet)
     * [new FormSet([options])](#new_FormSet_new)
+    * [.store](#FormSet+store)
     * [.getForms()](#FormSet+getForms) ⇒ [<code>Array.&lt;Form&gt;</code>](#Form)
     * [.addForm(name, queries, [options])](#FormSet+addForm) ⇒ [<code>Form</code>](#Form)
     * [.processForm(name, chatID, ref, [options], done(error))](#FormSet+processForm)
@@ -154,6 +155,12 @@ Emits `query(question, ref)` event.
 | [options.store] | [<code>SessionStore</code>](#SessionStore) | <code>MemorySessionStore</code> | Session store. |
 | [options.ttl] | <code>Number</code> | <code>+Infinity</code> | Time-To-Live for sessions. Ensure that the session store you use does supports using TTL-ed sessions. |
 
+<a name="FormSet+store"></a>
+
+### formSet.store
+Helper function for easier access to registered store.
+
+**Kind**: instance property of [<code>FormSet</code>](#FormSet)  
 <a name="FormSet+getForms"></a>
 
 ### formSet.getForms() ⇒ [<code>Array.&lt;Form&gt;</code>](#Form)
