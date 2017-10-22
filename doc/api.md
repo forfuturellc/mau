@@ -140,6 +140,7 @@ Error code is `"ESESS"`.
     * [.addForm(name, queries, [options])](#FormSet+addForm) ⇒ [<code>Form</code>](#Form)
     * [.processForm(name, chatID, ref, [options], done(error))](#FormSet+processForm)
     * [.process(chatID, text, ref, done(error))](#FormSet+process)
+    * [.cancel(chatID, done)](#FormSet+cancel)
 
 <a name="new_FormSet_new"></a>
 
@@ -257,6 +258,26 @@ formset.process(chatID, text, ref, function(error) {
     // ...
 });
 ```
+<a name="FormSet+cancel"></a>
+
+### formSet.cancel(chatID, done)
+Cancel current form processing for chat.
+
+**Kind**: instance method of [<code>FormSet</code>](#FormSet)  
+**Throws**:
+
+- <code>SessionError</code> if fails to cancel form processing
+
+**Todo**
+
+- [ ] Test this method!
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| chatID | <code>String</code> \| <code>Number</code> | Unique identifier for the originating  chat |
+| done | <code>function</code> | callback(error, removed); `removed` is a boolean  indicating whether the form was actually removed. |
+
 
 * * *
 

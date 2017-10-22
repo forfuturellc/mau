@@ -41,7 +41,8 @@ class SessionStore extends EventEmitter {
     /**
      * Destroy session.
      * @param  {String} sid Session ID
-     * @param  {Function} done(error)
+     * @param  {Function} done(error, removed) `removed` is a boolean
+     *  indicating whether the session has been removed.
      */
     del(sid, done) { // eslint-disable-line no-unused-vars
         throw new Error("Not Implemented: SessionStore#del()");

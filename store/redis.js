@@ -56,7 +56,9 @@ class RedisSessionStore extends SessionStore {
         return this.client.set(args, done);
     }
     del(sid, done) {
-        return this.client.del(sid, done);
+        return this.client.del(sid, (error, removed) => {
+            return done(error, removed === 1);
+        });
     }
 }
 
