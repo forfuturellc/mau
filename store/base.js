@@ -19,7 +19,7 @@ class SessionStore extends EventEmitter {
     /**
      * Retrieve the session.
      * @param  {String} sid Session ID
-     * @param  {Function} done(error, session)
+     * @param  {Function} done callback(error, session)
      */
     get(sid, done) { // eslint-disable-line no-unused-vars
         throw new Error("Not Implemented: SessionStore#get()");
@@ -32,7 +32,7 @@ class SessionStore extends EventEmitter {
      * @param  {Object} options
      * @param  {Number} options.ttl Session TTL. Equals `+Infinity` to
      *  have the session stored indefinitely.
-     * @param  {Function} done(error)
+     * @param  {Function} done callback(error)
      */
     put(sid, session, options, done) { // eslint-disable-line no-unused-vars
         throw new Error("Not Implemented: SessionStore#put()");
@@ -41,7 +41,7 @@ class SessionStore extends EventEmitter {
     /**
      * Destroy session.
      * @param  {String} sid Session ID
-     * @param  {Function} done(error, removed) `removed` is a boolean
+     * @param  {Function} done callback(error, removed) `removed` is a boolean
      *  indicating whether the session has been removed.
      */
     del(sid, done) { // eslint-disable-line no-unused-vars

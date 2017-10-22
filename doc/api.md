@@ -138,8 +138,8 @@ Error code is `"ESESS"`.
     * [new FormSet([options])](#new_FormSet_new)
     * [.getForms()](#FormSet+getForms) ⇒ [<code>Array.&lt;Form&gt;</code>](#Form)
     * [.addForm(name, queries, [options])](#FormSet+addForm) ⇒ [<code>Form</code>](#Form)
-    * [.processForm(name, chatID, ref, [options], done(error))](#FormSet+processForm)
-    * [.process(chatID, text, ref, done(error))](#FormSet+process)
+    * [.processForm(name, chatID, ref, [options], done)](#FormSet+processForm)
+    * [.process(chatID, text, ref, done)](#FormSet+process)
     * [.cancel(chatID, done)](#FormSet+cancel)
 
 <a name="new_FormSet_new"></a>
@@ -179,7 +179,7 @@ Add a new form to this set.
 
 <a name="FormSet+processForm"></a>
 
-### formSet.processForm(name, chatID, ref, [options], done(error))
+### formSet.processForm(name, chatID, ref, [options], done)
 Process the message using a certain form.
 
 If `chatID` is a Number, it is converted to string, using
@@ -203,7 +203,7 @@ used as the actual reference.
 | ref | <code>Object</code> \| <code>function</code> | Reference |
 | [options] | <code>Object</code> | Options |
 | [options.answers] | <code>Object</code> | Initial answers hash |
-| done(error) | <code>function</code> |  |
+| done | <code>function</code> |  |
 
 **Example** *(chatID as Number)*  
 ```js
@@ -227,7 +227,7 @@ formset.processForm(name, chatID, ref, function(error) {
 ```
 <a name="FormSet+process"></a>
 
-### formSet.process(chatID, text, ref, done(error))
+### formSet.process(chatID, text, ref, done)
 Process a message. This is a variant of `FormSet#processForm()`
 method. It tries to service the message using an active form,
 which if not found, a `FormNotFoundError` error is passed to `done`.
@@ -244,7 +244,7 @@ which if not found, a `FormNotFoundError` error is passed to `done`.
 | chatID | <code>String</code> \| <code>Number</code> | Unique identifier for the originating  chat |
 | text | <code>String</code> | Text of the message |
 | ref | <code>Object</code> \| <code>function</code> | Reference |
-| done(error) | <code>function</code> |  |
+| done | <code>function</code> |  |
 
 **Example**  
 ```js
@@ -297,7 +297,7 @@ Cancel current form processing for chat.
     * [.goto(name, done)](#QueryController+goto)
     * [.retry([text], done)](#QueryController+retry)
     * [.post(done)](#QueryController+post)
-    * [.text(id, [ctx], done(error,)](#QueryController+text)
+    * [.text(id, [ctx], done)](#QueryController+text)
     * [.stop(done)](#QueryController+stop)
     * [.do(name, done)](#QueryController+do)
     * [.send(id, done)](#QueryController+send)
@@ -433,7 +433,7 @@ This should **ONLY** be used in `pre` hooks.
 
 <a name="QueryController+text"></a>
 
-### queryController.text(id, [ctx], done(error,)
+### queryController.text(id, [ctx], done)
 Return the internalized text, if possible.
 Return `null` if can not be performed.
 
@@ -447,7 +447,7 @@ Return `null` if can not be performed.
 | --- | --- | --- |
 | id | <code>String</code> | ID of the i18n text |
 | [ctx] | <code>Object</code> | Context to be used in interpolation |
-| done(error, | <code>function</code> | text) |
+| done | <code>function</code> | callback(error, text) |
 
 <a name="QueryController+stop"></a>
 
@@ -518,13 +518,13 @@ Set the current query's text.
 ## SessionStore
 
 * [SessionStore](#SessionStore)
-    * [.get(sid, done(error,)](#SessionStore+get)
-    * [.put(sid, session, options, done(error))](#SessionStore+put)
-    * [.del(sid, done(error))](#SessionStore+del)
+    * [.get(sid, done)](#SessionStore+get)
+    * [.put(sid, session, options, done)](#SessionStore+put)
+    * [.del(sid, done)](#SessionStore+del)
 
 <a name="SessionStore+get"></a>
 
-### sessionStore.get(sid, done(error,)
+### sessionStore.get(sid, done)
 Retrieve the session.
 
 **Kind**: instance method of [<code>SessionStore</code>](#SessionStore)  
@@ -532,11 +532,11 @@ Retrieve the session.
 | Param | Type | Description |
 | --- | --- | --- |
 | sid | <code>String</code> | Session ID |
-| done(error, | <code>function</code> | session) |
+| done | <code>function</code> | callback(error, session) |
 
 <a name="SessionStore+put"></a>
 
-### sessionStore.put(sid, session, options, done(error))
+### sessionStore.put(sid, session, options, done)
 Save session.
 
 **Kind**: instance method of [<code>SessionStore</code>](#SessionStore)  
@@ -547,11 +547,11 @@ Save session.
 | session | <code>Object</code> | Session object |
 | options | <code>Object</code> |  |
 | options.ttl | <code>Number</code> | Session TTL. Equals `+Infinity` to  have the session stored indefinitely. |
-| done(error) | <code>function</code> |  |
+| done | <code>function</code> | callback(error) |
 
 <a name="SessionStore+del"></a>
 
-### sessionStore.del(sid, done(error))
+### sessionStore.del(sid, done)
 Destroy session.
 
 **Kind**: instance method of [<code>SessionStore</code>](#SessionStore)  
@@ -559,5 +559,5 @@ Destroy session.
 | Param | Type | Description |
 | --- | --- | --- |
 | sid | <code>String</code> | Session ID |
-| done(error) | <code>function</code> |  |
+| done | <code>function</code> | callback(error, removed) `removed` is a boolean  indicating whether the session has been removed. |
 
