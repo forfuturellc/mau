@@ -342,7 +342,7 @@ To use `defaultValue`, `name` must be specified.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [name] | <code>String</code> | Name of query |
+| [name] | <code>String</code> | Name of query. This is actually a path. |
 | [defaultValue] | <code>\*</code> | Default value |
 
 <a name="QueryController+setAnswer"></a>
@@ -359,7 +359,7 @@ If `name` is omitted, it sets the answer for the current query.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [name] | <code>String</code> | Name of query |
+| [name] | <code>String</code> | Name of query. This is actually a path. |
 | val | <code>\*</code> | New value |
 
 <a name="QueryController+skip"></a>
