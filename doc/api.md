@@ -300,6 +300,7 @@ Cancel current form processing for chat.
     * [.text(id, [ctx], done(error,)](#QueryController+text)
     * [.stop(done)](#QueryController+stop)
     * [.do(name, done)](#QueryController+do)
+    * [.send(id, done)](#QueryController+send)
     * [.setText(id)](#QueryController+setText)
 
 <a name="new_QueryController_new"></a>
@@ -473,6 +474,25 @@ Skip to the form with `name`.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>String</code> | Name of form |
+| done | <code>function</code> |  |
+
+<a name="QueryController+send"></a>
+
+### queryController.send(id, done)
+Send text message.
+
+**Kind**: instance method of [<code>QueryController</code>](#QueryController)  
+**Todo**
+
+- [ ] Test this method!
+- [ ] Wait for the message to actually be sent! Currently, the
+ `query` event is fired and we move on without waiting for
+ the event handler to report status of the sending operation.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> | ID of the i18n text |
 | done | <code>function</code> |  |
 
 <a name="QueryController+setText"></a>
