@@ -13,11 +13,13 @@ const assert = require("assert");
 // own modules
 const mau = require("../../..");
 const Form = require("../../../lib/form");
+const FormSet = require("../../../lib/formset");
 const QueryController = require("../../../lib/query-controller");
 const session = require("../../../lib/session");
 
 
 describe("QueryController", function() {
+    const formset = new FormSet();
     const chatID = 12345;
     let form, sess, ref, controller;
 
@@ -25,7 +27,7 @@ describe("QueryController", function() {
         form = new Form("form-name", []);
         sess = session.initialize(chatID, form);
         ref = {};
-        controller = new QueryController(form, sess, ref);
+        controller = new QueryController(formset, form, sess, ref);
     });
 
     it("is exported as a Function/Constructor", function() {
@@ -36,7 +38,7 @@ describe("QueryController", function() {
         const queryName = "query";
         form.queries = [{ name: queryName }];
         sess.query = queryName;
-        controller = new QueryController(form, sess, ref);
+        controller = new QueryController(formset, form, sess, ref);
         assert.equal(form.queries[0], controller.currentQuery);
     });
 
@@ -89,7 +91,7 @@ describe("QueryController", function() {
             form.queries = [{ name: queryName }];
             sess = session.initialize(chatID, form, options);
             sess.query = queryName;
-            controller = new QueryController(form, sess, ref);
+            controller = new QueryController(formset, form, sess, ref);
             assert.equal(options.answers[queryName], controller.getAnswer(queryName));
         });
     });

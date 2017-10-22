@@ -12,10 +12,13 @@ const assert = require("assert");
 
 // own modules
 const Form = require("../../../lib/form");
+const FormSet = require("../../../lib/formset");
 const session = require("../../../lib/session");
 
 
 describe("Form", function() {
+    const formset = new FormSet();
+
     it("is exported as a Function/Constructor", function() {
         assert.equal(typeof Form, "function");
     });
@@ -58,7 +61,7 @@ describe("Form", function() {
                 },
             ]);
             const sess = session.initialize(12345, form);
-            return form.process(sess, "world", ref, function(error, question, updatedSession) {
+            return form.process(formset, sess, "world", ref, function(error, question, updatedSession) {
                 assert.ifError(error);
                 assert.ok(question);
                 assert.ok(updatedSession);

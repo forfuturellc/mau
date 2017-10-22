@@ -288,7 +288,7 @@ Cancel current form processing for chat.
 
 * [QueryController](#QueryController)
     * [new QueryController()](#new_QueryController_new)
-    * [new QueryController(form, session, ref)](#new_QueryController_new)
+    * [new QueryController(formset, form, session, ref)](#new_QueryController_new)
     * [.getAnswers()](#QueryController+getAnswers) ⇒ <code>Object</code>
     * [.getAnswer([name], [defaultValue])](#QueryController+getAnswer) ⇒ <code>\*</code>
     * [.setAnswer([name], val)](#QueryController+setAnswer)
@@ -299,6 +299,7 @@ Cancel current form processing for chat.
     * [.post(done)](#QueryController+post)
     * [.text(id, [ctx], done(error,)](#QueryController+text)
     * [.stop(done)](#QueryController+stop)
+    * [.do(name, done)](#QueryController+do)
     * [.setText(id)](#QueryController+setText)
 
 <a name="new_QueryController_new"></a>
@@ -309,7 +310,7 @@ next; supporting operations such as skipping to a target query.
 
 <a name="new_QueryController_new"></a>
 
-### new QueryController(form, session, ref)
+### new QueryController(formset, form, session, ref)
 **Throws**:
 
 - <code>QueryNotFoundError</code> if current query is not found.
@@ -317,6 +318,7 @@ next; supporting operations such as skipping to a target query.
 
 | Param | Type | Description |
 | --- | --- | --- |
+| formset | [<code>FormSet</code>](#FormSet) | FormSet |
 | form | [<code>Form</code>](#Form) | Form |
 | session | <code>Session</code> | Session |
 | ref | <code>Object</code> | Reference |
@@ -456,6 +458,22 @@ Stop processing form at the current query.
 | Param | Type |
 | --- | --- |
 | done | <code>function</code> | 
+
+<a name="QueryController+do"></a>
+
+### queryController.do(name, done)
+Skip to the form with `name`.
+
+**Kind**: instance method of [<code>QueryController</code>](#QueryController)  
+**Todo**
+
+- [ ] Test this method!
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Name of form |
+| done | <code>function</code> |  |
 
 <a name="QueryController+setText"></a>
 
