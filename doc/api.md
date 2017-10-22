@@ -290,7 +290,7 @@ Cancel current form processing for chat.
     * [new QueryController()](#new_QueryController_new)
     * [new QueryController(form, session, ref)](#new_QueryController_new)
     * [.getAnswers()](#QueryController+getAnswers) ⇒ <code>Object</code>
-    * [.getAnswer([name])](#QueryController+getAnswer) ⇒ <code>\*</code>
+    * [.getAnswer([name], [defaultValue])](#QueryController+getAnswer) ⇒ <code>\*</code>
     * [.setAnswer([name], val)](#QueryController+setAnswer)
     * [.skip(done)](#QueryController+skip)
     * [.goto(name, done)](#QueryController+goto)
@@ -328,9 +328,10 @@ Retrieve an object/hash containing all the answers.
 **Returns**: <code>Object</code> - answers  
 <a name="QueryController+getAnswer"></a>
 
-### queryController.getAnswer([name]) ⇒ <code>\*</code>
+### queryController.getAnswer([name], [defaultValue]) ⇒ <code>\*</code>
 Retrieve an answer.
-If `name` is omitted, it returns answer for the current query.
+If `name` is omitted/falsey, it returns answer for the current query.
+To use `defaultValue`, `name` must be specified.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
 **Returns**: <code>\*</code> - value  
@@ -342,6 +343,7 @@ If `name` is omitted, it returns answer for the current query.
 | Param | Type | Description |
 | --- | --- | --- |
 | [name] | <code>String</code> | Name of query |
+| [defaultValue] | <code>\*</code> | Default value |
 
 <a name="QueryController+setAnswer"></a>
 
