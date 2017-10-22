@@ -354,7 +354,7 @@ If `name` is omitted, it sets the answer for the current query.
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
 **Throws**:
 
-- <code>QueryNotFoundError</code> if current is not found.
+- <code>QueryNotFoundError</code> if current query is not found.
 
 
 | Param | Type | Description |
