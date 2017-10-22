@@ -292,6 +292,7 @@ Cancel current form processing for chat.
     * [.getAnswers()](#QueryController+getAnswers) ⇒ <code>Object</code>
     * [.getAnswer([name], [defaultValue])](#QueryController+getAnswer) ⇒ <code>\*</code>
     * [.setAnswer([name], val)](#QueryController+setAnswer)
+    * [.unsetAnswer([name])](#QueryController+unsetAnswer)
     * [.skip(done)](#QueryController+skip)
     * [.goto(name, done)](#QueryController+goto)
     * [.retry([text], done)](#QueryController+retry)
@@ -361,6 +362,22 @@ If `name` is omitted, it sets the answer for the current query.
 | --- | --- | --- |
 | [name] | <code>String</code> | Name of query. This is actually a path. |
 | val | <code>\*</code> | New value |
+
+<a name="QueryController+unsetAnswer"></a>
+
+### queryController.unsetAnswer([name])
+Unset an answer.
+If `name` is omitted, it unsets the answer for the current query.
+
+**Kind**: instance method of [<code>QueryController</code>](#QueryController)  
+**Throws**:
+
+- <code>QueryNotFoundError</code> if current query is not found
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [name] | <code>String</code> | Name of query. This is actually a path. |
 
 <a name="QueryController+skip"></a>
 
