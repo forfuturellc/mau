@@ -299,6 +299,7 @@ Cancel current form processing for chat.
     * [.post(done)](#QueryController+post)
     * [.text(id, [ctx], done(error,)](#QueryController+text)
     * [.stop(done)](#QueryController+stop)
+    * [.setText(id)](#QueryController+setText)
 
 <a name="new_QueryController_new"></a>
 
@@ -455,6 +456,21 @@ Stop processing form at the current query.
 | Param | Type |
 | --- | --- |
 | done | <code>function</code> | 
+
+<a name="QueryController+setText"></a>
+
+### queryController.setText(id)
+Set the current query's text.
+
+**Kind**: instance method of [<code>QueryController</code>](#QueryController)  
+**Todo**
+
+- [ ] Test this method!
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> | ID of the i18n text |
 
 
 * * *
