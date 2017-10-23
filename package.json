@@ -18,7 +18,7 @@
   "scripts": {
     "doc": "jsdoc2md --files lib/*.js store/*.js --template doc/api.hbs > doc/api.md",
     "test": "grunt test",
-    "test-coverage": "istanbul cover _mocha --report lcovonly -- -R spec test/unit/**/*.js"
+    "test-coverage": "istanbul cover _mocha --report lcovonly -- --exit -R spec test/unit/**/*.js"
   },
   "dependencies": {
     "async": "^2.3.0",
