@@ -7,10 +7,10 @@
 
 > Query Engine
 >
+> "*UI engine* is to **graphical** user interfaces as
+> *Query engine* is to **textual** user interfaces."
+>
 > :construction: **Work In Progress** :construction:
-> This is currently a PoC for a Query Engine requested at
-> [GochoMugo/tgfancy#5](https://github.com/GochoMugo/tgfancy/issues/5).
-> We are open to contribution from you.
 
 [![Supported Node.js Versions](https://img.shields.io/badge/node->=7-green.svg)](https://github.com/forfuturellc/mau)
  [![Build Status](https://travis-ci.org/forfuturellc/mau.svg?branch=master)](https://travis-ci.org/forfuturellc/mau)
