@@ -12,7 +12,8 @@
 >
 > :construction: **Work In Progress** :construction:
 
-[![Supported Node.js Versions](https://img.shields.io/badge/node->=7-green.svg)](https://github.com/forfuturellc/mau)
+[![Version](https://img.shields.io/npm/v/mau.svg)](https://www.npmjs.com/package/mau)
+ [![Supported Node.js Versions](https://img.shields.io/badge/node->=7-green.svg)](https://github.com/forfuturellc/mau)
  [![Build Status](https://travis-ci.org/forfuturellc/mau.svg?branch=master)](https://travis-ci.org/forfuturellc/mau)
  [![Coverage Status](https://coveralls.io/repos/github/forfuturellc/mau/badge.svg?branch=master)](https://coveralls.io/github/forfuturellc/mau?branch=master)
  [![Dependency Status](https://gemnasium.com/forfuturellc/mau.svg)](https://gemnasium.com/forfuturellc/mau)
