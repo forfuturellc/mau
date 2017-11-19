@@ -22,6 +22,9 @@ interface Session {
     // The query (in the form above) the user is currently on.
     query?: string;
 
+    // Text sent to the user.
+    text?: string;
+
     // Choices sent to the user.
     choices?: integer[];
 
