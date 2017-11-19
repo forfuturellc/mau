@@ -24,6 +24,7 @@
 * [installation](#installation)
 * [examples](example/README.md)
 * [API reference](doc/api.md)
+* [Specifications](doc/spec.md)
 * [license](#license)
 
 
