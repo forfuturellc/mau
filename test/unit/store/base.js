@@ -43,6 +43,7 @@ describe("SessionStore", function() {
         it("throws 'NotImplemented' Error by default", function() {
             try {
                 store.put();
+                assert.fail("Error not thrown.");
             } catch (ex) {
                 assert.ok(isNotImplementedError(ex) , "Wrong error.");
             }
@@ -53,6 +54,7 @@ describe("SessionStore", function() {
         it("throws an 'NotImplemented' Error by default", function() {
             try {
                 store.del();
+                assert.fail("Error not thrown.");
             } catch (ex) {
                 assert.ok(isNotImplementedError(ex) , "Wrong error.");
             }

@@ -15,7 +15,7 @@
 ## constants
 <a name="module_constants.SESSION_VERSION"></a>
 
-### constants.SESSION_VERSION
+### constants.SESSION\_VERSION
 Version of session used by the library.
 Different libraries may use same version of the session,
 allowing the sessions to be interchangeable between them.
@@ -136,7 +136,7 @@ Error code is `"ESESS"`.
 
 * [FormSet](#FormSet)
     * [new FormSet([options])](#new_FormSet_new)
-    * [.getForms()](#FormSet+getForms) ⇒ [<code>Array.&lt;Form&gt;</code>](#Form)
+    * [.getForms()](#FormSet+getForms) ⇒ [<code>[ &#x27;Array&#x27; ].&lt;Form&gt;</code>](#Form)
     * [.addForm(name, queries, [options])](#FormSet+addForm) ⇒ [<code>Form</code>](#Form)
     * [.processForm(name, chatID, ref, [options], done)](#FormSet+processForm)
     * [.process(chatID, text, ref, done)](#FormSet+process)
@@ -157,7 +157,7 @@ Emits `query(question, ref)` event.
 
 <a name="FormSet+getForms"></a>
 
-### formSet.getForms() ⇒ [<code>Array.&lt;Form&gt;</code>](#Form)
+### formSet.getForms() ⇒ [<code>[ &#x27;Array&#x27; ].&lt;Form&gt;</code>](#Form)
 Return the added forms.
 
 **Kind**: instance method of [<code>FormSet</code>](#FormSet)  

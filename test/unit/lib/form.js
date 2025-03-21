@@ -54,16 +54,13 @@ describe("Form", function() {
                 {
                     name: "hello",
                     text: "hello",
-                    pre(done) {
-                        assert.strictEqual(this.ref, ref, "Incorrect reference.");
-                        return done();
-                    },
                 },
             ]);
             const sess = session.initialize(12345, form);
-            return form.process(formset, sess, "world", ref, function(error, question, updatedSession) {
+            return form.process(formset, sess, null, ref, function(error, question, updatedSession) {
                 assert.ifError(error);
                 assert.ok(question);
+                assert.equal(question.text, "hello");
                 assert.ok(updatedSession);
                 return done();
             });

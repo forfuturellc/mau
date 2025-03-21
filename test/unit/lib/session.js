@@ -27,6 +27,7 @@ describe("session", function() {
             assert.equal(chatID, sess.chatID, "Incorrect ID.");
             assert.equal(form.name, sess.form, "Incorrect form name.");
             assert.equal(undefined, sess.query, "Query is not undefined.");
+            assert.equal(undefined, sess.text, "Text is not undefined.");
             assert.equal(undefined, sess.choices, "Choices is not undefined.");
             assert.equal(undefined, sess.answers, "Answers is not undefined.");
         });

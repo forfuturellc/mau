@@ -11,7 +11,8 @@ interface Session {
     // Session version.
     // Check this prop if you wish to work with
     // sessions from other libraries.
-    version=0: number;
+    // Default is 0.
+    version: number;
 
     // The chat associated with this session.
     chatID: string;
