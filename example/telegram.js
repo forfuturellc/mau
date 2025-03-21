@@ -31,7 +31,7 @@ const formset = new mau.FormSet({
     }),
     // Time-To-Live: this indicates how long the session should be stored.
     // If the session expires, the form will be lost.
-    // By default, the session lives infinitely. You'll set this
+    // By default, the session lives indefinitely. You'll set this
     // to your liking.
     ttl: 1000 * 60 * 5, // in milliseconds.
 });
