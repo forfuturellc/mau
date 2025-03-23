@@ -11,6 +11,7 @@ const redis = require("redis");
 
 
 // own modules
+const errors = require("../lib/errors");
 const SessionStore = require("./base");
 
 
@@ -44,8 +45,11 @@ class RedisSessionStore extends SessionStore {
         if (!data) {
             return null;
         }
-        // TODO: Throw proper error if parsing fails.
-        return JSON.parse(data);
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            throw new errors.SessionError(error);
+        }
     }
     async put(sid, session, options) {
         await this._connect();
