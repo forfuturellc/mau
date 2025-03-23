@@ -6,17 +6,17 @@ A **Query Engine** for building interactive prompts.
  [![Supported Node.js Versions](https://img.shields.io/badge/node->=7-green.svg)](https://github.com/forfuturellc/mau)
 
 
-**table of contents:**
+**Table of Contents**
 
-* [installation](#installation)
-* [examples](example/README.md)
-* [API reference](doc/api.md)
+* [Installation](#installation)
+* [Examples](example/README.md)
+* [API Reference](doc/api.md)
 * [Specifications](doc/spec.md)
-* [license](#license)
+* [License](#license)
 
 
 <a name="installation"></a>
-## installation:
+## Installation
 
 ```bash
 $ npm install --save mau
@@ -24,7 +24,7 @@ $ npm install --save mau
 
 
 <a name="license"></a>
-## license:
+## License
 
 ***The MIT License (MIT)***
 

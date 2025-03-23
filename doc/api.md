@@ -213,14 +213,14 @@ formset.processForm(name, 12345, ref);
 **Example** *(FormNotFoundError)*  
 ```js
 // Assuming there's no form with the name '404'.
-formset.processForm("404", chatID, ref, function(error) {
+formset.processForm("404", chatID, ref).catch(function(error) {
     assert.ok(error instanceof mau.errors.FormNotFoundError);
 });
 ```
 **Example** *(BusyError)*  
 ```js
 // Assuming there's a form already being processed.
-formset.processForm(name, chatID, ref, function(error) {
+formset.processForm(name, chatID, ref).catch(function(error) {
     assert.ok(error instanceof mau.errors.BusyError);
 });
 ```
@@ -247,15 +247,13 @@ which if not found, a `FormNotFoundError` error is thrown.
 **Example**  
 ```js
 // Assuming there's a form named 'hello'
-try {
-     await formset.process(chatID, text, ref);
-} catch (error) {
-     if (error && error instanceof mau.errors.FormNotFoundError) {
+await formset.process(chatID, text, ref).catch(function (error) {
+     if (error instanceof mau.errors.FormNotFoundError) {
         // There's NO active form.
         // Let's trigger the 'hello' form.
         await formset.processForm("hello", chatID, text, ref);
     }
-}
+});
 ```
 <a name="FormSet+cancel"></a>
 
