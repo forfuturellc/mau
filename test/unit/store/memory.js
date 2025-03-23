@@ -17,17 +17,12 @@ const { defaultOptions, session, sid } = require("./impl");
 
 describe("MemorySessionStore", function() {
     describe("#put()", function() {
-        it("does not affect other memory stores", function(done) {
+        it("does not affect other memory stores", async function() {
             const store1 = new MemorySessionStore();
             const store2 = new MemorySessionStore();
-            store1.put(sid, session, defaultOptions, function(error) {
-                assert.ifError(error);
-                store2.get(sid, function(error, sess) {
-                    assert.ifError(error);
-                    assert.ok(!sess, "Session shared between stores.");
-                    return done();
-                });
-            });
+            await store1.put(sid, session, defaultOptions);
+            const sess = await store2.get(sid);
+            assert.ok(!sess, "Session shared between stores.");
         });
     });
 });

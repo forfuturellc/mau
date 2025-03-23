@@ -29,9 +29,9 @@ describe("SessionStore", function() {
     });
 
     describe("#get()", function() {
-        it("throws 'NotImplemented' Error by default", function() {
+        it("throws 'NotImplemented' Error by default", async function() {
             try {
-                store.get();
+                await store.get();
                 assert.fail("Error not thrown.");
             } catch (ex) {
                 assert.ok(isNotImplementedError(ex) , "Wrong error.");
@@ -40,9 +40,9 @@ describe("SessionStore", function() {
     });
 
     describe("#put()", function() {
-        it("throws 'NotImplemented' Error by default", function() {
+        it("throws 'NotImplemented' Error by default", async function() {
             try {
-                store.put();
+                await store.put();
                 assert.fail("Error not thrown.");
             } catch (ex) {
                 assert.ok(isNotImplementedError(ex) , "Wrong error.");
@@ -51,9 +51,9 @@ describe("SessionStore", function() {
     });
 
     describe("#del()", function() {
-        it("throws an 'NotImplemented' Error by default", function() {
+        it("throws an 'NotImplemented' Error by default", async function() {
             try {
-                store.del();
+                await store.del();
                 assert.fail("Error not thrown.");
             } catch (ex) {
                 assert.ok(isNotImplementedError(ex) , "Wrong error.");

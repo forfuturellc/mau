@@ -51,26 +51,22 @@ formset.addForm("example", [
         name: "name",
         text: "What is your name?",
         // 'post' hook: executed AFTER the user has answered.
-        post(answer, done) {
+        async post(answer) {
             // 'answer' is the answer the user provided.
             // Let's update our answer with a uppercased version.
             this.setAnswer(answer.toUpperCase());
-            // ALWAYS invoke the callback (directly or indirectly;
-            // keep reading for now). It allows you to do
-            // async operations in the hook.
-            return done();
         },
     },
     {
         name: "skipped",
         text: "this should be skipped",
         // 'pre' hook: executed BEFORE the user answers the query.
-        pre(done) {
+        async pre() {
             // Let's just place a dummy answer.
             this.setAnswer(true);
             // Skip this query i.e. do NOT send the question.
             // Move to next query.
-            return this.skip(done);
+            await this.skip();
         },
     },
     {
@@ -79,28 +75,26 @@ formset.addForm("example", [
             text: "Pick a color",
             choices: ["black", "white", "gray"],
         },
-        post(answer, done) {
+        async post() {
             // The engine allows you to skip to another query.
-            return this.goto("random", done);
+            await this.goto("random");
         },
     },
     {
         name: "untouched",
         text: "This will not (and should NOT) be used!",
-        pre() {
+        async pre() {
             throw new Error("We should NOT be here!!!");
         },
     },
     {
         name: "random",
         text: "Type something random (retries till you answer with 'random')",
-        post(answer, done) {
+        async post(answer) {
             if (answer !== "random") {
                 // We can also make the engine retry the query.
-                // Also, here we pass in the callback (`done`).
-                return this.retry("type in 'random'", done);
+                await this.retry("type in 'random'");
             }
-            return done();
         },
     },
 ], {
@@ -154,7 +148,7 @@ formset.on("query", function(question, msg) {
 
 
 // Receiving messages from users.
-bot.on("text", function(msg) {
+bot.on("text", async function(msg) {
     console.log("[*] received new text message: %s", msg.text);
 
     // A Reference is used to allow you to provide arbitrary data
@@ -163,27 +157,30 @@ bot.on("text", function(msg) {
     // to any of the select functions is passed AS IS to relevant
     // callbacks.
     const ref = msg; // Just the original message object.
+    let formNotFound = false;
 
-    // Have the formset process the message, in the chat identified
-    // by the unique ID `msg.chat.id`.
-    // Use the message's text `msg.text` as the answer.
-    // Our reference i.e. `ref`.
-    return formset.process(msg.chat.id, msg.text, ref, onProcess);
-
-    function onProcess(error) {
-        if (error) {
-            // A form was not found. You can trigger a certain form be
-            // used, as we doing below. You may choose to ask the user to
-            // choose for themselves, etc.
-            if (error instanceof mau.errors.FormNotFoundError) {
-                console.log("[*] triggering the example form");
-                return formset.processForm("example", msg.chat.id, msg, onSelectFormProcess);
-            }
+    try {
+        // Have the formset process the message, in the chat identified
+        // by the unique ID `msg.chat.id`.
+        // Use the message's text `msg.text` as the answer.
+        // Our reference i.e. `ref`.
+        await formset.process(msg.chat.id, msg.text, ref);
+    } catch (error) {
+        // A form was not found. You can trigger a certain form be
+        // used, as we doing below. You may choose to ask the user to
+        // choose for themselves, etc.
+        if (error instanceof mau.errors.FormNotFoundError) {
+            formNotFound = true;
+        } else {
             return console.error(error);
         }
     }
-    function onSelectFormProcess(error) {
-        if (error) {
+
+    if (formNotFound) {
+        try {
+            console.log("[*] triggering the example form");
+            await formset.processForm("example", msg.chat.id, msg);
+        } catch (error) {
             return console.error(error);
         }
     }

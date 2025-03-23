@@ -25,40 +25,38 @@ class RedisSessionStore extends SessionStore {
         super();
         if (options.client) {
             this.client = options.client;
+            this._connected = true;
         } else {
             this.client = redis.createClient(options);
             this.client.on("error", (error) => this.emit("error", error));
+            this._connected = false;
         }
     }
-    get(sid, done) {
-        return this.client.get(sid, (error, data) => {
-            if (error) {
-                return done(error);
-            }
-            if (!data) {
-                return done(null, null);
-            }
-            let session;
-            try {
-                session = JSON.parse(data);
-            } catch(ex) {
-                return done(ex);
-            }
-            return done(null, session);
-        });
-    }
-    put(sid, session, options, done) {
-        const data = JSON.stringify(session);
-        const args = [sid, data];
-        if (options.ttl !== +Infinity) {
-            args.push("PX", options.ttl);
+    async _connect() {
+        if (!this._connected) {
+            await this.client.connect();
+            this._connected = true;
         }
-        return this.client.set(args, done);
     }
-    del(sid, done) {
-        return this.client.del(sid, (error, removed) => {
-            return done(error, removed === 1);
+    async get(sid) {
+        await this._connect();
+        const data = await this.client.get(sid);
+        if (!data) {
+            return null;
+        }
+        // TODO: Throw proper error if parsing fails.
+        return JSON.parse(data);
+    }
+    async put(sid, session, options) {
+        await this._connect();
+        await this.client.set(sid, JSON.stringify(session), {
+            PX: options.ttl === +Infinity ? undefined : options.ttl,
         });
+    }
+    async del(sid) {
+        await this._connect();
+        const removed = await this.client.del(sid);
+        return removed === 1;
     }
 }
 

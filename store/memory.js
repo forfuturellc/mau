@@ -23,15 +23,15 @@ class MemorySessionStore extends SessionStore {
     _prefixSid(sid) {
         return `${this.id}:${sid}`;
     }
-    get(sid, done) {
-        return done(null, memory.get(this._prefixSid(sid)));
+    async get(sid) {
+        return memory.get(this._prefixSid(sid));
     }
-    put(sid, session, options, done) {
+    async put(sid, session, options) {
         const ttl = options.ttl === +Infinity ? undefined : options.ttl;
-        return done(null, memory.put(this._prefixSid(sid), session, ttl));
+        memory.put(this._prefixSid(sid), session, ttl);
     }
-    del(sid, done) {
-        return done(null, memory.del(this._prefixSid(sid)));
+    async del(sid) {
+        memory.del(this._prefixSid(sid));
     }
 }
 

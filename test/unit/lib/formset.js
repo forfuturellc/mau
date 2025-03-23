@@ -93,26 +93,27 @@ describe("FormSet", function() {
                 assert.strictEqual(_ref, ref, "Incorrect reference passed.");
                 return _done();
             });
-            formset.processForm(formName, chatID, ref, function() {
-                return _done();
-            });
+            _done.wrap(formset.processForm(formName, chatID, ref));
         });
-        it("throws FormNotFoundError if form is not found", function(done) {
-            formset.processForm("404", chatID, ref, function(error) {
-                assert.ok(error, "Error not thrown.");
-                assert.ok(error instanceof mau.errors.FormNotFoundError, "Error thrown is not a FormNotFoundError instance.");
-                return done();
-            });
+        it("throws FormNotFoundError if form is not found", async function() {
+            await assert.rejects(
+                formset.processForm("404", chatID, ref),
+                error => {
+                    assert.ok(error instanceof mau.errors.FormNotFoundError, "Error thrown is not a FormNotFoundError instance.");
+                    return true;
+                },
+            );
         });
-        it("throws BusyError if form is already being processed", function(done) {
-            const _done = multiDone(2, done);
-            formset.processForm(formName, chatID, ref, _done);
+        it("throws BusyError if form is already being processed", async function() {
+            await formset.processForm(formName, chatID, ref);
             formset.addForm("another", []);
-            formset.processForm("another", chatID, ref, function(error) {
-                assert.ok(error, "Error not thrown.");
-                assert.ok(error instanceof mau.errors.BusyError, "Error thrown is not a BusyError instance.");
-                return _done();
-            });
+            await assert.rejects(
+                formset.processForm("another", chatID, ref),
+                error => {
+                    assert.ok(error instanceof mau.errors.BusyError, "Error thrown is not a BusyError instance.");
+                    return true;
+                },
+            );
         });
     });
 
@@ -138,7 +139,7 @@ describe("FormSet", function() {
             formset = new mau.FormSet();
             formset.addForm(formName, queries);
             formset.on("query", () => _done());
-            formset.processForm(formName, chatID, ref, () => _done());
+            _done.wrap(formset.processForm(formName, chatID, ref));
         });
         it("[#on('query')] processes query", function(done) {
             const _done = multiDone(2, done);
@@ -149,15 +150,17 @@ describe("FormSet", function() {
                 assert.strictEqual(_ref, ref, "Incorrect reference passed.");
                 return _done();
             });
-            formset.process(chatID, "answer", ref, _done);
+            _done.wrap(formset.process(chatID, "answer", ref));
         });
-        it("throws FormNotFoundError if form is not found", function(done) {
+        it("throws FormNotFoundError if form is not found", async function() {
             formset.options.store = new MemoryStore();
-            formset.process(chatID, "answer", ref, function(error) {
-                assert.ok(error, "Error not thrown.");
-                assert.ok(error instanceof mau.errors.FormNotFoundError, "Error thrown is not a FormNotFoundError instance.");
-                return done();
-            });
+            await assert.rejects(
+                formset.process(chatID, "answer", ref),
+                error => {
+                    assert.ok(error instanceof mau.errors.FormNotFoundError, "Error thrown is not a FormNotFoundError instance.");
+                    return true;
+                },
+            );
         });
     });
 
@@ -186,31 +189,22 @@ describe("FormSet", function() {
             sid = formset._prefix(chatID);
             formset.addForm(formName, queries);
             formset.on("query", () => _done());
-            formset.processForm(formName, chatID, ref, () => _done());
+            _done.wrap(formset.processForm(formName, chatID, ref));
         });
-        it("updates session using store", function(done) {
-            formset.process(chatID, answer, ref, function() {
-                formset.options.store.get(sid, (error, session) => {
-                    assert.ifError(error);
-                    assert.ok(session, "Session not found.");
-                    assert.equal(session.version, mau.constants.SESSION_VERSION, "Incorrect session version.");
-                    assert.equal(session.form, formName, "Incorrect form name.");
-                    assert.equal(session.answers[queries[0].name], answer, "Saved answer not same.");
-                    return done();
-                });
-            });
+        it("updates session using store", async function() {
+            await formset.process(chatID, answer, ref);
+            const session = await formset.options.store.get(sid);
+            assert.ok(session, "Session not found.");
+            assert.equal(session.version, mau.constants.SESSION_VERSION, "Incorrect session version.");
+            assert.equal(session.form, formName, "Incorrect form name.");
+            assert.equal(session.answers[queries[0].name], answer, "Saved answer not same.");
         });
-        it("deletes session if form is complete", function(done) {
+        it("deletes session if form is complete", async function() {
             const [ form ] = formset.getForms();
             delete form.queries[1];
-            formset.process(chatID, answer, ref, function(error) {
-                assert.ifError(error);
-                formset.options.store.get(sid, (error, session) => {
-                    assert.ifError(error);
-                    assert.ok(!session, "Session found; not destroyed.");
-                    return done();
-                });
-            });
+            await formset.process(chatID, answer, ref);
+            const session = await formset.options.store.get(sid);
+            assert.ok(!session, "Session found; not destroyed.");
         });
         it("invokes the form completion callback if done", function(done) {
             const _done = multiDone(2, done);
@@ -221,28 +215,20 @@ describe("FormSet", function() {
                 assert.strictEqual(_ref, ref, "Incorrect reference passed.");
                 return _done();
             };
-            formset.process(chatID, answer, ref, _done);
+            _done.wrap(formset.process(chatID, answer, ref));
         });
-        it("throws SessionError if session has different version", function(done) {
-            formset.options.store.get(sid, (error, session) => {
-                assert.ifError(error);
-                assert.ok(session, "Session not found.");
-                session.version = mau.constants.SESSION_VERSION + 1;
-                return storeSession(session);
-            });
-            function storeSession(session) {
-                formset.options.store.put(sid, session, {}, function(error) {
-                    assert.ifError(error);
-                    return processForm();
-                });
-            }
-            function processForm() {
-                formset.process(chatID, answer, ref, function(error) {
-                    assert.ok(error, "Error not thrown.");
+        it("throws SessionError if session has different version", async function() {
+            const session = await formset.options.store.get(sid);
+            assert.ok(session, "Session not found.");
+            session.version = mau.constants.SESSION_VERSION + 1;
+            await formset.options.store.put(sid, session, {});
+            await assert.rejects(
+                formset.process(chatID, answer, ref),
+                error => {
                     assert.ok(error instanceof mau.errors.SessionError, "Error thrown is not a SessionError instance.");
-                    return done();
-                });
-            }
+                    return true;
+                },
+            );
         });
     });
 });
@@ -250,8 +236,12 @@ describe("FormSet", function() {
 
 function multiDone(num, done) {
     let todo = num;
-    return function(error) {
+    const _done = function(error) {
         assert.ifError(error);
         if (--todo === 0) { done(); }
     };
+    _done.wrap = function (promise) {
+        promise.then(() => _done()).catch(_done);
+    };
+    return _done;
 }

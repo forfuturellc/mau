@@ -48,7 +48,7 @@ describe("Form", function() {
     });
 
     describe("form#process()", function() {
-        it("processes queries", function(done) {
+        it("processes queries", async function() {
             const ref = {};
             const form = new Form("form-name", [
                 {
@@ -57,13 +57,10 @@ describe("Form", function() {
                 },
             ]);
             const sess = session.initialize(12345, form);
-            return form.process(formset, sess, null, ref, function(error, question, updatedSession) {
-                assert.ifError(error);
-                assert.ok(question);
-                assert.equal(question.text, "hello");
-                assert.ok(updatedSession);
-                return done();
-            });
+            const { question, session: updatedSession } = await form.process(formset, sess, null, ref);
+            assert.ok(question);
+            assert.equal(question.text, "hello");
+            assert.ok(updatedSession);
         });
     });
 });

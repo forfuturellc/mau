@@ -38,13 +38,10 @@ let index = 0;
 
 
 console.log("[*] opening a ngrok tunnel");
-ngrok.connect(port, function(error, url) {
-    if (error) throw error;
+ngrok.connect(port).then(function(url) {
     console.log("[*] setting Telegram bot webhook to %s", url);
-    bot.setWebHook(`${url}/bot${token}`).catch(function(error) {
-        if (error) throw error;
-    });
-});
+    return bot.setWebHook(`${url}/bot${token}`);
+}).catch(error => { throw error; });
 
 
 function requestListener(req, res) {

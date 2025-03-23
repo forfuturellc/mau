@@ -22,22 +22,16 @@ const { defaultOptions, session, sid } = require("./impl");
 describe("RedisSessionStore", function() {
     const prefix = "test:mau:";
 
-    it("[#put()] allows custom client", function(done) {
+    it("[#put()] allows custom client", async function() {
         const customPrefix = `${prefix}custom:`;
         const customClient = redis.createClient({
             prefix: customPrefix,
         });
+        await customClient.connect();
         const customStore = new RedisSessionStore({ client: customClient });
-        customClient.del(sid, function(error) {
-            assert.ifError(error);
-            customStore.put(sid, session, defaultOptions, function(error) {
-                assert.ifError(error);
-                customClient.get(sid, function(error, data) {
-                    assert.ifError(error);
-                    assert.ok(data);
-                    return done();
-                });
-            });
-        });
+        await customClient.del(sid);
+        await customStore.put(sid, session, defaultOptions);
+        const data = await customClient.get(sid);
+        assert.ok(data);
     });
 });

@@ -46,9 +46,9 @@ function testImplementation(test) {
     describe(test.suite, function() {
         let store;
 
-        beforeEach(function(done) {
+        beforeEach(async function() {
             store = test.init();
-            store.del(sid, done);
+            await store.del(sid);
         });
 
         it("is exported as a Function/constructor", function() {
@@ -60,53 +60,31 @@ function testImplementation(test) {
         });
 
         describe("#put()", function() {
-            it("[#get()] saves key-value pair", function(done) {
-                store.put(sid, session, defaultOptions, function(error) {
-                    assert.ifError(error);
-                    store.get(sid, function(error, sess) {
-                        assert.ifError(error);
-                        assert.deepEqual(sess, session, "Incorrect session returned.");
-                        return done();
-                    });
-                });
+            it("[#get()] saves key-value pair", async function() {
+                await store.put(sid, session, defaultOptions);
+                const sess = await store.get(sid);
+                assert.deepEqual(sess, session, "Incorrect session returned.");
             });
 
-            it("adds expiry time", function (done) {
+            it("adds expiry time", async function () {
                 const expiringSid = `${sid}-expiring`;
                 const nonExpiringSid = `${sid}-nonexpiring`;
-                store.put(nonExpiringSid, session, { ttl: +Infinity }, function(error) {
-                    assert.ifError(error);
-                    store.put(expiringSid, session, { ttl: 500 }, function (error) {
-                        assert.ifError(error);
-                        setTimeout(() => {
-                            store.get(nonExpiringSid, function (error, sess) {
-                                assert.ifError(error);
-                                assert.ok(sess, "Session is missing");
-                                store.get(expiringSid, function (error, sess) {
-                                    assert.ifError(error);
-                                    assert.ok(!sess, "Session still exists");
-                                    done();
-                                });
-                            });
-                        }, 750);
-                    });
-                });
+                await store.put(nonExpiringSid, session, { ttl: +Infinity });
+                await store.put(expiringSid, session, { ttl: 500 });
+                await new Promise(r => setTimeout(r, 750));
+                const sess1 = await store.get(nonExpiringSid);
+                assert.ok(sess1, "Session is missing");
+                const sess2 = await store.get(expiringSid);
+                assert.ok(!sess2, "Session still exists");
             });
         });
 
         describe("#del()", function() {
-            it("[#put()] deletes session", function(done) {
-                store.put(sid, session, defaultOptions, function(error) {
-                    assert.ifError(error);
-                    store.del(sid, function(error) {
-                        assert.ifError(error);
-                        store.get(sid, function(error, sess) {
-                            assert.ifError(error);
-                            assert.ok(!sess, "Session not destroyed.");
-                            return done();
-                        });
-                    });
-                });
+            it("[#put()] deletes session", async function() {
+                await store.put(sid, session, defaultOptions);
+                await store.del(sid);
+                const sess = await store.get(sid);
+                assert.ok(!sess, "Session not destroyed.");
             });
         });
     });

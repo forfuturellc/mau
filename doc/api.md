@@ -138,9 +138,9 @@ Error code is `"ESESS"`.
     * [new FormSet([options])](#new_FormSet_new)
     * [.getForms()](#FormSet+getForms) ⇒ [<code>Array.&lt;Form&gt;</code>](#Form)
     * [.addForm(name, queries, [options])](#FormSet+addForm) ⇒ [<code>Form</code>](#Form)
-    * [.processForm(name, chatID, ref, [options], done)](#FormSet+processForm)
-    * [.process(chatID, text, ref, done)](#FormSet+process)
-    * [.cancel(chatID, done)](#FormSet+cancel)
+    * [.processForm(name, chatID, ref, [options])](#FormSet+processForm)
+    * [.process(chatID, text, ref)](#FormSet+process)
+    * [.cancel(chatID)](#FormSet+cancel)
 
 <a name="new_FormSet_new"></a>
 
@@ -175,11 +175,11 @@ Add a new form to this set.
 | queries | <code>Array</code> | Queries to be asked to user |
 | [options] | <code>Object</code> | Options |
 | [options.cb(answers, ref)] | <code>function</code> | Invoked with the final answers, when the form has been completed. |
-| [options.i18n(text, ctx, ref, done)] | <code>function</code> | Internationalization function. |
+| [options.i18n(text, ctx, ref)] | <code>function</code> | Internationalization function. |
 
 <a name="FormSet+processForm"></a>
 
-### formSet.processForm(name, chatID, ref, [options], done)
+### formSet.processForm(name, chatID, ref, [options])
 Process the message using a certain form.
 
 If `chatID` is a Number, it is converted to string, using
@@ -203,7 +203,6 @@ used as the actual reference.
 | ref | <code>Object</code> \| <code>function</code> | Reference |
 | [options] | <code>Object</code> | Options |
 | [options.answers] | <code>Object</code> | Initial answers hash |
-| done | <code>function</code> |  |
 
 **Example** *(chatID as Number)*  
 ```js
@@ -227,10 +226,10 @@ formset.processForm(name, chatID, ref, function(error) {
 ```
 <a name="FormSet+process"></a>
 
-### formSet.process(chatID, text, ref, done)
+### formSet.process(chatID, text, ref)
 Process a message. This is a variant of `FormSet#processForm()`
 method. It tries to service the message using an active form,
-which if not found, a `FormNotFoundError` error is passed to `done`.
+which if not found, a `FormNotFoundError` error is thrown.
 
 **Kind**: instance method of [<code>FormSet</code>](#FormSet)  
 **Throws**:
@@ -244,23 +243,23 @@ which if not found, a `FormNotFoundError` error is passed to `done`.
 | chatID | <code>String</code> \| <code>Number</code> | Unique identifier for the originating  chat |
 | text | <code>String</code> | Text of the message |
 | ref | <code>Object</code> \| <code>function</code> | Reference |
-| done | <code>function</code> |  |
 
 **Example**  
 ```js
 // Assuming there's a form named 'hello'
-formset.process(chatID, text, ref, function(error) {
-    if (error && error instanceof mau.errors.FormNotFoundError) {
+try {
+     await formset.process(chatID, text, ref);
+} catch (error) {
+     if (error && error instanceof mau.errors.FormNotFoundError) {
         // There's NO active form.
         // Let's trigger the 'hello' form.
-        formset.processForm("hello", chatID, text, ref, done);
+        await formset.processForm("hello", chatID, text, ref);
     }
-    // ...
-});
+}
 ```
 <a name="FormSet+cancel"></a>
 
-### formSet.cancel(chatID, done)
+### formSet.cancel(chatID)
 Cancel current form processing for chat.
 
 **Kind**: instance method of [<code>FormSet</code>](#FormSet)  
@@ -276,7 +275,6 @@ Cancel current form processing for chat.
 | Param | Type | Description |
 | --- | --- | --- |
 | chatID | <code>String</code> \| <code>Number</code> | Unique identifier for the originating  chat |
-| done | <code>function</code> | callback(error, removed); `removed` is a boolean  indicating whether the form was actually removed. |
 
 
 * * *
@@ -293,14 +291,14 @@ Cancel current form processing for chat.
     * [.getAnswer([name], [defaultValue])](#QueryController+getAnswer) ⇒ <code>\*</code>
     * [.setAnswer([name], val)](#QueryController+setAnswer)
     * [.unsetAnswer([name])](#QueryController+unsetAnswer)
-    * [.skip(done)](#QueryController+skip)
-    * [.goto(name, done)](#QueryController+goto)
-    * [.retry([text], done)](#QueryController+retry)
-    * [.post(done)](#QueryController+post)
-    * [.text(id, [ctx], done)](#QueryController+text)
-    * [.stop(done)](#QueryController+stop)
-    * [.do(name, done)](#QueryController+do)
-    * [.send(id, done)](#QueryController+send)
+    * [.skip()](#QueryController+skip)
+    * [.goto(name)](#QueryController+goto)
+    * [.retry([text])](#QueryController+retry)
+    * [.post()](#QueryController+post)
+    * [.text(id, [ctx])](#QueryController+text)
+    * [.stop()](#QueryController+stop)
+    * [.do(name)](#QueryController+do)
+    * [.send(id)](#QueryController+send)
     * [.setText(id)](#QueryController+setText)
 
 <a name="new_QueryController_new"></a>
@@ -385,18 +383,13 @@ If `name` is omitted, it unsets the answer for the current query.
 
 <a name="QueryController+skip"></a>
 
-### queryController.skip(done)
+### queryController.skip()
 Skip the current query.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
-
-| Param | Type |
-| --- | --- |
-| done | <code>function</code> | 
-
 <a name="QueryController+goto"></a>
 
-### queryController.goto(name, done)
+### queryController.goto(name)
 Skip to the query with `name`.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
@@ -404,11 +397,10 @@ Skip to the query with `name`.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>String</code> | Name of query |
-| done | <code>function</code> |  |
 
 <a name="QueryController+retry"></a>
 
-### queryController.retry([text], done)
+### queryController.retry([text])
 Retry the current query i.e. do not advance to the next query.
 This should **ONLY** be used in `post` hooks.
 
@@ -417,23 +409,17 @@ This should **ONLY** be used in `post` hooks.
 | Param | Type | Description |
 | --- | --- | --- |
 | [text] | <code>String</code> | Text |
-| done | <code>function</code> |  |
 
 <a name="QueryController+post"></a>
 
-### queryController.post(done)
+### queryController.post()
 Execute the `post` hook and advance.
 This should **ONLY** be used in `pre` hooks.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
-
-| Param | Type |
-| --- | --- |
-| done | <code>function</code> | 
-
 <a name="QueryController+text"></a>
 
-### queryController.text(id, [ctx], done)
+### queryController.text(id, [ctx])
 Return the internalized text, if possible.
 Return `null` if can not be performed.
 
@@ -447,22 +433,16 @@ Return `null` if can not be performed.
 | --- | --- | --- |
 | id | <code>String</code> | ID of the i18n text |
 | [ctx] | <code>Object</code> | Context to be used in interpolation |
-| done | <code>function</code> | callback(error, text) |
 
 <a name="QueryController+stop"></a>
 
-### queryController.stop(done)
+### queryController.stop()
 Stop processing form at the current query.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
-
-| Param | Type |
-| --- | --- |
-| done | <code>function</code> | 
-
 <a name="QueryController+do"></a>
 
-### queryController.do(name, done)
+### queryController.do(name)
 Skip to the form with `name`.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
@@ -474,11 +454,10 @@ Skip to the form with `name`.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>String</code> | Name of form |
-| done | <code>function</code> |  |
 
 <a name="QueryController+send"></a>
 
-### queryController.send(id, done)
+### queryController.send(id)
 Send text message.
 
 **Kind**: instance method of [<code>QueryController</code>](#QueryController)  
@@ -493,7 +472,6 @@ Send text message.
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>String</code> | ID of the i18n text |
-| done | <code>function</code> |  |
 
 <a name="QueryController+setText"></a>
 
@@ -518,13 +496,13 @@ Set the current query's text.
 ## SessionStore
 
 * [SessionStore](#SessionStore)
-    * [.get(sid, done)](#SessionStore+get)
-    * [.put(sid, session, options, done)](#SessionStore+put)
-    * [.del(sid, done)](#SessionStore+del)
+    * [.get(sid)](#SessionStore+get) ⇒ <code>Promise.&lt;Session&gt;</code>
+    * [.put(sid, session, options)](#SessionStore+put) ⇒ <code>Promise.&lt;void&gt;</code>
+    * [.del(sid)](#SessionStore+del) ⇒ <code>Promise.&lt;boolean&gt;</code>
 
 <a name="SessionStore+get"></a>
 
-### sessionStore.get(sid, done)
+### sessionStore.get(sid) ⇒ <code>Promise.&lt;Session&gt;</code>
 Retrieve the session.
 
 **Kind**: instance method of [<code>SessionStore</code>](#SessionStore)  
@@ -532,11 +510,10 @@ Retrieve the session.
 | Param | Type | Description |
 | --- | --- | --- |
 | sid | <code>String</code> | Session ID |
-| done | <code>function</code> | callback(error, session) |
 
 <a name="SessionStore+put"></a>
 
-### sessionStore.put(sid, session, options, done)
+### sessionStore.put(sid, session, options) ⇒ <code>Promise.&lt;void&gt;</code>
 Save session.
 
 **Kind**: instance method of [<code>SessionStore</code>](#SessionStore)  
@@ -547,17 +524,17 @@ Save session.
 | session | <code>Object</code> | Session object |
 | options | <code>Object</code> |  |
 | options.ttl | <code>Number</code> | Session TTL. Equals `+Infinity` to  have the session stored indefinitely. |
-| done | <code>function</code> | callback(error) |
 
 <a name="SessionStore+del"></a>
 
-### sessionStore.del(sid, done)
+### sessionStore.del(sid) ⇒ <code>Promise.&lt;boolean&gt;</code>
 Destroy session.
 
 **Kind**: instance method of [<code>SessionStore</code>](#SessionStore)  
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - Resolves to a boolean
+ indicating whether the session has been removed.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | sid | <code>String</code> | Session ID |
-| done | <code>function</code> | callback(error, removed) `removed` is a boolean  indicating whether the session has been removed. |
 
