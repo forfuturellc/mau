@@ -141,6 +141,7 @@ Error code is `"ESESS"`.
     * [.processForm(name, chatID, ref, [options])](#FormSet+processForm)
     * [.process(chatID, text, ref)](#FormSet+process)
     * [.cancel(chatID)](#FormSet+cancel)
+    * [._emitQuery(question, ref)](#FormSet+_emitQuery)
 
 <a name="new_FormSet_new"></a>
 
@@ -273,6 +274,18 @@ Cancel current form processing for chat.
 | Param | Type | Description |
 | --- | --- | --- |
 | chatID | <code>String</code> \| <code>Number</code> | Unique identifier for the originating  chat |
+
+<a name="FormSet+_emitQuery"></a>
+
+### formSet.\_emitQuery(question, ref)
+Emits the `query` event.
+
+**Kind**: instance method of [<code>FormSet</code>](#FormSet)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| question | <code>Object</code> | Query |
+| ref | <code>Object</code> | Reference |
 
 
 * * *
