@@ -1,0 +1,7 @@
+*
+!doc/**/*.md
+!lib/**/*
+!store/**/*
+!index.d.ts
+!LICENSE.txt
+!README.md
