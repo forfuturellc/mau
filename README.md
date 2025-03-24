@@ -3,7 +3,7 @@
 A **Query Engine** for building interactive prompts.
 
 [![Version](https://img.shields.io/npm/v/mau.svg)](https://www.npmjs.com/package/mau)
- [![Supported Node.js Versions](https://img.shields.io/badge/node->=7-green.svg)](https://github.com/forfuturellc/mau)
+ [![Supported Node.js Versions](https://img.shields.io/badge/node->=22-green.svg)](https://github.com/forfuturellc/mau)
 
 
 **Table of Contents**

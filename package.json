@@ -1,6 +1,6 @@
 {
   "name": "mau",
-  "version": "0.3.3",
+  "version": "1.0.0",
   "description": "Query Engine",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   "main": "lib/index.js",
   "types": "index.d.ts",
   "engines": {
-    "node": ">=7"
+    "node": ">=22"
   },
   "scripts": {
     "doc": "jsdoc2md --files lib/*.js store/*.js --template doc/api.hbs > doc/api.md",
