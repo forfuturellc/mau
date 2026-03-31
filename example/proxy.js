@@ -8,7 +8,6 @@
  * This is simply a proxy that passes webhook messages to different
  * Telegram bot instances.
  */
-/* eslint-disable no-console */
 
 
 // built-in modules

@@ -7,7 +7,6 @@
  * Demonstrating using the Query Engine to process queries in
  * a Telegram Bot.
  */
-/* eslint-disable no-console */
 
 
 // installed modules
