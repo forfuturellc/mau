@@ -82,9 +82,9 @@ function testImplementation(test) {
         describe("#del()", function() {
             it("[#put()] deletes session", async function() {
                 await store.put(sid, session, defaultOptions);
-                await store.del(sid);
+                const isDeleted = await store.del(sid);
                 const sess = await store.get(sid);
-                assert.ok(!sess, "Session not destroyed.");
+                assert.ok(isDeleted && !sess, "Session not destroyed.");
             });
         });
     });

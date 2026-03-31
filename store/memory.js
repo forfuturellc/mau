@@ -34,7 +34,7 @@ class MemorySessionStore extends SessionStore {
         memory.put(this._prefixSid(sid), session, ttl);
     }
     async del(sid) {
-        memory.del(this._prefixSid(sid));
+        return memory.del(this._prefixSid(sid));
     }
 }
 
