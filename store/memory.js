@@ -6,9 +6,12 @@
  */
 
 
+// built-in modules
+const crypto = require("crypto");
+
+
 // installed modules
 const memory = require("memory-cache");
-const uuid = require("uuid");
 
 
 // own modules
@@ -18,7 +21,7 @@ const SessionStore = require("./base");
 class MemorySessionStore extends SessionStore {
     constructor() {
         super();
-        this.id = uuid.v4();
+        this.id = crypto.randomUUID();
     }
     _prefixSid(sid) {
         return `${this.id}:${sid}`;

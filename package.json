@@ -26,8 +26,7 @@
     "debug": "^4.4.3",
     "lodash": "^4.17.23",
     "memory-cache": "^0.2.0",
-    "redis": "^5.11.0",
-    "uuid": "^13.0.0"
+    "redis": "^5.11.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
