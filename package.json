@@ -33,12 +33,14 @@
     "c8": "^11.0.0",
     "eslint": "^10.1.0",
     "globals": "^17.4.0",
+    "iovalkey": "^0.3.3",
     "jsdoc-to-markdown": "^9.1.3",
     "mocha": "^11.7.5",
     "mocha-lcov-reporter": "^1.3.0",
     "redis": "^5.11.0"
   },
   "peerDependencies": {
+    "iovalkey": "^0.3.3",
     "redis": "^5.11.0"
   }
 }

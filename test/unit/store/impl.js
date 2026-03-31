@@ -14,6 +14,7 @@ const assert = require("assert");
 const SessionStore = require("../../../store/base");
 const MemoryStore = require("../../../store/memory");
 const RedisStore = require("../../../store/redis");
+const ValkeyStore = require("../../../store/valkey");
 
 
 const defaultOptions = { ttl: +Infinity };
@@ -33,6 +34,15 @@ const tests = [
         init: () => {
             return new RedisStore({
                 prefix: "test:mau:redis:",
+            });
+        },
+    },
+    {
+        suite: "ValkeyStore impl.",
+        constructor: ValkeyStore,
+        init: () => {
+            return new ValkeyStore({
+                keyPrefix: "test:mau:valkey:",
             });
         },
     },
