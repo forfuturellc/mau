@@ -32,7 +32,7 @@ const tests = [
         constructor: RedisStore,
         init: () => {
             return new RedisStore({
-                prefix: "test:mau:",
+                prefix: "test:mau:redis:",
             });
         },
     },

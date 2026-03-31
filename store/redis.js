@@ -20,10 +20,12 @@ class RedisSessionStore extends SessionStore {
      * @constructor
      * @param  {Object} [options] Options passed to 'redis.createClient()' (if `options.client` is *not* provided)
      * @param  {RedisClient} [options.client] An existing client
+     * @param  {String} [options.prefix] Key prefix
      * @see https://github.com/NodeRedis/node_redis#rediscreateclient
      */
     constructor(options={}) {
         super();
+        this.prefix = options.prefix || "";
         if (options.client) {
             this.client = options.client;
             this._connected = true;
@@ -39,9 +41,12 @@ class RedisSessionStore extends SessionStore {
             this._connected = true;
         }
     }
+    _prefixSid(sid) {
+        return `${this.prefix}${sid}`;
+    }
     async get(sid) {
         await this._connect();
-        const data = await this.client.get(sid);
+        const data = await this.client.get(this._prefixSid(sid));
         if (!data) {
             return null;
         }
@@ -53,13 +58,13 @@ class RedisSessionStore extends SessionStore {
     }
     async put(sid, session, options) {
         await this._connect();
-        await this.client.set(sid, JSON.stringify(session), {
+        await this.client.set(this._prefixSid(sid), JSON.stringify(session), {
             PX: options.ttl === +Infinity ? undefined : options.ttl,
         });
     }
     async del(sid) {
         await this._connect();
-        const removed = await this.client.del(sid);
+        const removed = await this.client.del(this._prefixSid(sid));
         return removed === 1;
     }
 }
