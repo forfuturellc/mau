@@ -42,6 +42,12 @@ export interface Form<Answers, Ref> {
 }
 
 export class FormSet<Answers, Ref> {
+    constructor(options?: {
+        prefix?: string;
+        store?: SessionStore;
+        ttl?: number;
+    });
+
     addForm(
         formName: string,
         queries: Query<Answers, Ref>[],
@@ -132,4 +138,16 @@ export interface QueryController<Answers, Ref> {
 
     unsetAnswer(): void;
     unsetAnswer<Key extends keyof Answers>(name: Key): void;
+}
+
+export interface Session {}
+
+export class SessionStore {
+    get(sid: string): Promise<Session>;
+
+    put(sid: string, session: Session, options?: {
+        ttl?: number;
+    }): Promise<void>;
+
+    del(sid: string): Promise<boolean>;
 }
